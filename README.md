@@ -8,10 +8,17 @@ Flurry integration for [analytics-android](https://github.com/segmentio/analytic
 
 ## Installation
 
-To install the Segment-Flurry integration, simply add this line to your gradle file:
+To install the Segment-Flurry integration, add this lines to your gradle file:
 
 ```
-compile 'com.segment.analytics.android.integrations:flurry:+'
+dependencies {
+  repositories {
+      mavenCentral()
+      jcenter()
+   }
+
+  compile 'com.segment.analytics.android.integrations:flurry:+'
+}
 ```
 
 ## Usage
