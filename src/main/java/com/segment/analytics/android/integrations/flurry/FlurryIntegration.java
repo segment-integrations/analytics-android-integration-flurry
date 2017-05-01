@@ -1,6 +1,7 @@
 package com.segment.analytics.android.integrations.flurry;
 
 import android.app.Activity;
+import android.app.Application;
 import com.flurry.android.Constants;
 import com.flurry.android.FlurryAgent;
 import com.segment.analytics.Analytics;
@@ -62,9 +63,15 @@ public class FlurryIntegration extends Integration<Void> {
     FlurryAgent.setLogEvents(logEvents);
     logger.verbose("FlurryAgent.setLogEvents(%s);", logEvents);
 
+    Application application = analytics.getApplication();
+
     String apiKey = settings.getString("apiKey");
-    FlurryAgent.init(analytics.getApplication(), apiKey);
-    logger.verbose("FlurryAgent.init(context, %s);", apiKey);
+    FlurryAgent.init(application, apiKey);
+    logger.verbose("FlurryAgent.init(application, %s);", apiKey);
+
+    // Start a session so that queued events can be delivered (even if no activities are started).
+    FlurryAgent.onStartSession(application);
+    logger.verbose("FlurryAgent.onStartSession(application)");
   }
 
   @Override public void onActivityStarted(Activity activity) {
