@@ -78,6 +78,8 @@ public class FlurryTest {
     FlurryAgent.setLogEvents(true);
     verifyStatic();
     FlurryAgent.init(application, "foo");
+    verifyStatic();
+    FlurryAgent.onStartSession(application);
   }
 
   @Test public void activityStart() {
