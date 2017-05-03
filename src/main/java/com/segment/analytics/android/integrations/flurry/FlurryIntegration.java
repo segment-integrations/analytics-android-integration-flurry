@@ -1,10 +1,16 @@
 package com.segment.analytics.android.integrations.flurry;
 
+import static com.segment.analytics.internal.Utils.isNullOrEmpty;
+
 import android.app.Activity;
 import android.app.Application;
+import android.util.Log;
 import com.flurry.android.Constants;
 import com.flurry.android.FlurryAgent;
+import com.flurry.android.FlurryAgent.Builder;
+import com.flurry.android.FlurryAgentListener;
 import com.segment.analytics.Analytics;
+import com.segment.analytics.Analytics.LogLevel;
 import com.segment.analytics.AnalyticsContext;
 import com.segment.analytics.Traits;
 import com.segment.analytics.ValueMap;
@@ -14,9 +20,6 @@ import com.segment.analytics.integrations.Logger;
 import com.segment.analytics.integrations.ScreenPayload;
 import com.segment.analytics.integrations.TrackPayload;
 import java.util.Map;
-
-import static com.segment.analytics.Analytics.LogLevel;
-import static com.segment.analytics.internal.Utils.isNullOrEmpty;
 
 /**
  * Flurry is the most popular analytics tool for mobile apps because it has a wide assortment of
@@ -28,46 +31,67 @@ import static com.segment.analytics.internal.Utils.isNullOrEmpty;
  * Android SDK</a>
  */
 public class FlurryIntegration extends Integration<Void> {
+
   public static final Factory FACTORY = new Factory() {
-    @Override public Integration<?> create(ValueMap settings, Analytics analytics) {
-      return new FlurryIntegration(analytics, settings);
+    @Override
+    public Integration<?> create(ValueMap settings, Analytics analytics) {
+      return new FlurryIntegration(analytics, FlurryAgentBuilderFactory.REAL, settings);
     }
 
-    @Override public String key() {
+    @Override
+    public String key() {
       return FLURRY_KEY;
     }
   };
   private static final String FLURRY_KEY = "Flurry";
   private final Logger logger;
 
-  FlurryIntegration(Analytics analytics, ValueMap settings) {
+  interface FlurryAgentBuilderFactory {
+
+    FlurryAgent.Builder create();
+
+    FlurryAgentBuilderFactory REAL = new FlurryAgentBuilderFactory() {
+      @Override
+      public Builder create() {
+        return new FlurryAgent.Builder();
+      }
+    };
+  }
+
+  FlurryIntegration(Analytics analytics, FlurryAgentBuilderFactory builderFactory,
+      ValueMap settings) {
     logger = analytics.logger(FLURRY_KEY);
 
-    int sessionContinueSeconds = settings.getInt("sessionContinueSeconds", 10) * 1000;
-    FlurryAgent.setContinueSessionMillis(sessionContinueSeconds);
-    logger.verbose("FlurryAgent.setContinueSessionMillis(%s);", sessionContinueSeconds);
-
+    Application application = analytics.getApplication();
+    int sessionContinueMillis = settings.getInt("sessionContinueSeconds", 10) * 1000;
     boolean captureUncaughtExceptions = settings.getBoolean("captureUncaughtExceptions", false);
-    FlurryAgent.setCaptureUncaughtExceptions(captureUncaughtExceptions);
-    logger.verbose("FlurryAgent.setCaptureUncaughtExceptions(%s);", captureUncaughtExceptions);
+    final boolean logEnabled = logger.logLevel.ordinal() >= LogLevel.DEBUG.ordinal();
+    String apiKey = settings.getString("apiKey");
+
+    builderFactory.create()
+        .withContinueSessionMillis(sessionContinueMillis)
+        .withCaptureUncaughtExceptions(captureUncaughtExceptions)
+        .withLogEnabled(logEnabled)
+        .withLogLevel(Log.VERBOSE)
+        .withListener(new FlurryAgentListener() {
+          @Override
+          public void onSessionStarted() {
+            logger.verbose("onSessionStarted");
+          }
+        })
+        .build(application, apiKey);
+
+    logger.verbose("new FlurryAgent.Builder()\n"
+            + "        .withContinueSessionMillis(%s)\n"
+            + "        .withCaptureUncaughtExceptions(%s)\n"
+            + "        .withLogEnabled(%s)\n"
+            + "        .withLogLevel(VERBOSE)\n"
+            + "        .build(application, %s)", sessionContinueMillis, captureUncaughtExceptions,
+        logEnabled, apiKey);
 
     boolean reportLocation = settings.getBoolean("reportLocation", true);
     FlurryAgent.setReportLocation(reportLocation);
     logger.verbose("FlurryAgent.setReportLocation(%s);", reportLocation);
-
-    boolean logEnabled = logger.logLevel.ordinal() >= LogLevel.DEBUG.ordinal();
-    FlurryAgent.setLogEnabled(logEnabled);
-    logger.verbose("FlurryAgent.setLogEnabled(%s);", logEnabled);
-
-    boolean logEvents = logger.logLevel.ordinal() >= LogLevel.VERBOSE.ordinal();
-    FlurryAgent.setLogEvents(logEvents);
-    logger.verbose("FlurryAgent.setLogEvents(%s);", logEvents);
-
-    Application application = analytics.getApplication();
-
-    String apiKey = settings.getString("apiKey");
-    FlurryAgent.init(application, apiKey);
-    logger.verbose("FlurryAgent.init(application, %s);", apiKey);
 
     // Start a session so that queued events can be delivered (even if no activities are started).
     FlurryAgent.onStartSession(application);
