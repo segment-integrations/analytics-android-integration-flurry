@@ -28,21 +28,22 @@ import java.util.Map;
  * @see <a href="http://www.flurry.com/">Flurry</a>
  * @see <a href="https://segment.com/docs/integrations/flurry/">Flurry Integration</a>
  * @see <a href="http://support.flurry.com/index.php?title=Analytics/GettingStarted/Android">Flurry
- * Android SDK</a>
+ *     Android SDK</a>
  */
 public class FlurryIntegration extends Integration<Void> {
 
-  public static final Factory FACTORY = new Factory() {
-    @Override
-    public Integration<?> create(ValueMap settings, Analytics analytics) {
-      return new FlurryIntegration(analytics, FlurryAgentBuilderFactory.REAL, settings);
-    }
+  public static final Factory FACTORY =
+      new Factory() {
+        @Override
+        public Integration<?> create(ValueMap settings, Analytics analytics) {
+          return new FlurryIntegration(analytics, FlurryAgentBuilderFactory.REAL, settings);
+        }
 
-    @Override
-    public String key() {
-      return FLURRY_KEY;
-    }
-  };
+        @Override
+        public String key() {
+          return FLURRY_KEY;
+        }
+      };
   private static final String FLURRY_KEY = "Flurry";
   private final Logger logger;
 
@@ -50,16 +51,17 @@ public class FlurryIntegration extends Integration<Void> {
 
     FlurryAgent.Builder create();
 
-    FlurryAgentBuilderFactory REAL = new FlurryAgentBuilderFactory() {
-      @Override
-      public Builder create() {
-        return new FlurryAgent.Builder();
-      }
-    };
+    FlurryAgentBuilderFactory REAL =
+        new FlurryAgentBuilderFactory() {
+          @Override
+          public Builder create() {
+            return new FlurryAgent.Builder();
+          }
+        };
   }
 
-  FlurryIntegration(Analytics analytics, FlurryAgentBuilderFactory builderFactory,
-      ValueMap settings) {
+  FlurryIntegration(
+      Analytics analytics, FlurryAgentBuilderFactory builderFactory, ValueMap settings) {
     logger = analytics.logger(FLURRY_KEY);
 
     Application application = analytics.getApplication();
@@ -68,26 +70,29 @@ public class FlurryIntegration extends Integration<Void> {
     final boolean logEnabled = logger.logLevel.ordinal() >= LogLevel.DEBUG.ordinal();
     String apiKey = settings.getString("apiKey");
 
-    builderFactory.create()
+    builderFactory
+        .create()
         .withContinueSessionMillis(sessionContinueMillis)
         .withCaptureUncaughtExceptions(captureUncaughtExceptions)
         .withLogEnabled(logEnabled)
         .withLogLevel(Log.VERBOSE)
-        .withListener(new FlurryAgentListener() {
-          @Override
-          public void onSessionStarted() {
-            logger.verbose("onSessionStarted");
-          }
-        })
+        .withListener(
+            new FlurryAgentListener() {
+              @Override
+              public void onSessionStarted() {
+                logger.verbose("onSessionStarted");
+              }
+            })
         .build(application, apiKey);
 
-    logger.verbose("new FlurryAgent.Builder()\n"
+    logger.verbose(
+        "new FlurryAgent.Builder()\n"
             + "        .withContinueSessionMillis(%s)\n"
             + "        .withCaptureUncaughtExceptions(%s)\n"
             + "        .withLogEnabled(%s)\n"
             + "        .withLogLevel(VERBOSE)\n"
-            + "        .build(application, %s)", sessionContinueMillis, captureUncaughtExceptions,
-        logEnabled, apiKey);
+            + "        .build(application, %s)",
+        sessionContinueMillis, captureUncaughtExceptions, logEnabled, apiKey);
 
     boolean reportLocation = settings.getBoolean("reportLocation", true);
     FlurryAgent.setReportLocation(reportLocation);
@@ -98,21 +103,24 @@ public class FlurryIntegration extends Integration<Void> {
     logger.verbose("FlurryAgent.onStartSession(application)");
   }
 
-  @Override public void onActivityStarted(Activity activity) {
+  @Override
+  public void onActivityStarted(Activity activity) {
     super.onActivityStarted(activity);
 
     FlurryAgent.onStartSession(activity);
     logger.verbose("FlurryAgent.onStartSession(activity);");
   }
 
-  @Override public void onActivityStopped(Activity activity) {
+  @Override
+  public void onActivityStopped(Activity activity) {
     super.onActivityStopped(activity);
 
     FlurryAgent.onEndSession(activity);
     logger.verbose("FlurryAgent.onEndSession(activity);");
   }
 
-  @Override public void screen(ScreenPayload screen) {
+  @Override
+  public void screen(ScreenPayload screen) {
     super.screen(screen);
     // todo: verify behaviour here, iOS SDK only does pageView, not event
     FlurryAgent.onPageView();
@@ -124,7 +132,8 @@ public class FlurryIntegration extends Integration<Void> {
     logger.verbose("FlurryAgent.logEvent(%s, %s);", event, properties);
   }
 
-  @Override public void track(TrackPayload track) {
+  @Override
+  public void track(TrackPayload track) {
     super.track(track);
 
     String event = track.event();
@@ -133,7 +142,8 @@ public class FlurryIntegration extends Integration<Void> {
     logger.verbose("FlurryAgent.logEvent(%s, %s);", event, properties);
   }
 
-  @Override public void identify(IdentifyPayload identify) {
+  @Override
+  public void identify(IdentifyPayload identify) {
     super.identify(identify);
 
     String userId = identify.userId();
