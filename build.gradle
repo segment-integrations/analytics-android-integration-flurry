@@ -18,7 +18,7 @@ android {
   buildToolsVersion '25.0.2'
 
   defaultConfig {
-    minSdkVersion 14
+    minSdkVersion 16
     targetSdkVersion 25
   }
 
@@ -40,7 +40,7 @@ dependencies {
 
   provided 'com.segment.analytics.android:analytics:4.0.0'
 
-  compile 'com.flurry.android:analytics:7.0.1@aar'
+  compile 'com.flurry.android:analytics:8.0.2@aar'
 
   testCompile 'junit:junit:4.12'
   testCompile('org.robolectric:robolectric:3.3.1') {
