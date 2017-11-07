@@ -1,3 +1,8 @@
+Version 3.0.0 (7th November, 2017)
+==================================
+*(Supports Flurry 8.0.2+)*
+
+  * Bump Flurry to version 8.0.2
 
 Version 2.0.0 (14th May, 2017)
 =============================
