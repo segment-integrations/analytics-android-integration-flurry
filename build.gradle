@@ -40,7 +40,7 @@ dependencies {
 
   provided 'com.segment.analytics.android:analytics:4.0.0'
 
-  compile 'com.flurry.android:analytics:8.0.2@aar'
+  compile group: 'com.flurry.android', name: 'analytics', version: '11.6.0'
 
   testCompile 'junit:junit:4.12'
   testCompile('org.robolectric:robolectric:3.3.1') {
