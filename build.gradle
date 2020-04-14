@@ -14,12 +14,12 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.f2prateek.javafmt'
 
 android {
-  compileSdkVersion 25
-  buildToolsVersion '25.0.2'
+  compileSdkVersion 26
+  buildToolsVersion '26.0.2'
 
   defaultConfig {
     minSdkVersion 16
-    targetSdkVersion 25
+    targetSdkVersion 26
   }
 
   compileOptions {
