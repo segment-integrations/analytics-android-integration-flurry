@@ -1,3 +1,10 @@
+Version 4.0.0 (14th April, 2020)
+==================================
+*(Supports Flurry 12.3.0)*
+
+  * Bump Flurry to version 12.3.0
+  * Removes support for onPage and setLocation calls
+
 Version 3.0.0 (7th November, 2017)
 ==================================
 *(Supports Flurry 8.0.2+)*
