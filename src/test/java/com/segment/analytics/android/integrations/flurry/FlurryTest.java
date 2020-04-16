@@ -146,6 +146,5 @@ public class FlurryTest {
     FlurryAgent.setAge(3);
     verifyStatic();
     FlurryAgent.setGender(Constants.FEMALE);
-    verifyStatic();
   }
 }

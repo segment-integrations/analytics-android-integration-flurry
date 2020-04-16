@@ -2,8 +2,11 @@ Version 4.0.0 (14th April, 2020)
 ==================================
 *(Supports Flurry 12.3.0)*
 
+  * Breaking: support for onPage and setLocation calls
   * Bump Flurry to version 12.3.0
-  * Removes support for onPage and setLocation calls
+
+   Note: Please see [Flurry release notes](https://developer.yahoo.com/flurry/docs/releasenotes/android/#android-sdk-release-notes) for complete list of changes.
+
 
 Version 3.0.0 (7th November, 2017)
 ==================================

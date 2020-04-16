@@ -122,8 +122,6 @@ public class FlurryIntegration extends Integration<Void> {
   @Override
   public void screen(ScreenPayload screen) {
     super.screen(screen);
-    // todo: verify behaviour here, iOS SDK only does pageView, not event
-    logger.verbose("FlurryAgent.onPageView();");
 
     String event = screen.event();
     Map<String, String> properties = screen.properties().toStringMap();
@@ -169,7 +167,5 @@ public class FlurryIntegration extends Integration<Void> {
       FlurryAgent.setGender(genderConstant);
       logger.verbose("FlurryAgent.setGender(%s);", genderConstant);
     }
-
-    AnalyticsContext.Location location = identify.context().location();
   }
 }
