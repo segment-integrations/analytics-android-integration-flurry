@@ -118,8 +118,6 @@ public class FlurryTest {
   @Test public void screen() {
     integration.screen(new ScreenPayloadBuilder().name("foo").category("bar").build());
     verifyStatic();
-    FlurryAgent.onPageView();
-    verifyStatic();
     FlurryAgent.logEvent(eq("foo"), Matchers.<Map<String, String>>any());
   }
 
@@ -148,7 +146,5 @@ public class FlurryTest {
     FlurryAgent.setAge(3);
     verifyStatic();
     FlurryAgent.setGender(Constants.FEMALE);
-    verifyStatic();
-    FlurryAgent.setLocation(20, 20);
   }
 }

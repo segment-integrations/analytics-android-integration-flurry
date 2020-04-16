@@ -14,12 +14,12 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.f2prateek.javafmt'
 
 android {
-  compileSdkVersion 25
-  buildToolsVersion '25.0.2'
+  compileSdkVersion 26
+  buildToolsVersion '26.0.2'
 
   defaultConfig {
     minSdkVersion 16
-    targetSdkVersion 25
+    targetSdkVersion 26
   }
 
   compileOptions {
@@ -40,7 +40,7 @@ dependencies {
 
   provided 'com.segment.analytics.android:analytics:4.0.0'
 
-  compile 'com.flurry.android:analytics:8.0.2@aar'
+  compile group: 'com.flurry.android', name: 'analytics', version: '12.3.0'
 
   testCompile 'junit:junit:4.12'
   testCompile('org.robolectric:robolectric:3.3.1') {
